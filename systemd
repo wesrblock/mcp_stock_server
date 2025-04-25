@@ -1,0 +1,40 @@
+# /etc/systemd/system/mcp_stock_server.service
+[Unit]
+Description=MCP Stock-Quote API (FastAPI / Uvicorn)
+After=network.target
+
+[Service]
+DynamicUser=yes
+WorkingDirectory=/opt/mcp_stock_server
+
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+
+ExecStart=/opt/mcp_stock_server/venv/bin/uvicorn server:app --host 0.0.0.0 --port 8000
+
+Restart=on-failure
+RestartSec=5
+
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+PrivateTmp=yes
+PrivateDevices=yes
+DevicePolicy=closed
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/opt/mcp_stock_server
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+MemoryDenyWriteExecute=yes
+LockPersonality=yes
+
+TimeoutStopSec=30
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
